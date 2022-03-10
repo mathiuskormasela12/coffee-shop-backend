@@ -1,0 +1,52 @@
+{
+  "name": "coffee-shop-backend",
+  "version": "1.0.0",
+  "description": "The RESTful API of the Coffee Shop application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./build/server.js",
+    "build": "tsc -p .",
+    "dev": "nodemon ./src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mathiuskormasela12/coffee-shop-backend.git"
+  },
+  "keywords": [
+    "Coffee",
+    "Shop",
+    "Buying",
+    "Drinking",
+    "Cafe"
+  ],
+  "author": "Mathius",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mathiuskormasela12/coffee-shop-backend/issues"
+  },
+  "homepage": "https://github.com/mathiuskormasela12/coffee-shop-backend#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "@typescript-eslint/parser": "^5.14.0",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.2.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.2"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "express-fileupload": "^1.3.1",
+    "helmet": "^5.0.2",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.3.3"
+  }
+}
