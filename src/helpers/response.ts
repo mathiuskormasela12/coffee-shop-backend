@@ -4,15 +4,17 @@ import { Request, Response } from 'express'
 import { ResponseType } from '../config/types'
 import config from '../config'
 
-const response: ResponseType = <T>(req: Request, res: Response, status: number, message: string, results?: T[] | T, totalData?: number, totalPage?: number): Response => {
+const response: ResponseType = <T>(req: Request, res: Response, status: number, success: boolean, message: string, results?: T[] | T, totalData?: number, totalPage?: number): Response => {
 	if (!results && (!req.query.page || !totalPage)) {
 		return res.status(status).json({
 			status,
+			success,
 			message
 		})
 	} else if (results && Array.isArray(results) && totalData && totalPage) {
 		return res.status(status).json({
 			status,
+			success,
 			message,
 			results,
 			pageInfo: {
@@ -26,6 +28,7 @@ const response: ResponseType = <T>(req: Request, res: Response, status: number, 
 	} else {
 		return res.status(status).json({
 			status,
+			success,
 			message,
 			results
 		})
