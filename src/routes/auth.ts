@@ -4,7 +4,7 @@ import { Router as ExpressRouter } from 'express'
 import RouterModule from './Router'
 
 // import all middlewares
-import { registerMiddleware } from '../middlewares/auth'
+import { registerMiddleware, sendForgotPasswordLink } from '../middlewares/auth'
 
 // import all controllers
 import AuthControllerModule from '../controllers/auth'
@@ -21,6 +21,7 @@ namespace AuthRouterModule {
 		public get getRouter (): ExpressRouter {
 			this.router.post('/auth/register', registerMiddleware, AuthControllerModule.Auth.register)
 			this.router.post('/auth/login', AuthControllerModule.Auth.login)
+			this.router.post('/auth/forgot-password', sendForgotPasswordLink, AuthControllerModule.Auth.sendForgotPasswordLink)
 
 			return this.router
 		}

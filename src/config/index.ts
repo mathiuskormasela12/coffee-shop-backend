@@ -11,6 +11,7 @@ export default {
 	apiUrl: String(process.env.API_URL),
 	publicUrl: String(process.env.PUBLIC_URL),
 	secretKey: String(process.env.SECRET_KEY),
+	webAppUrl: String(process.env.WEB_APP_URL),
 	whiteLists: [
 		'http://localhost:3000',
 		'http://127.0.0.1:3000',

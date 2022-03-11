@@ -5,6 +5,7 @@ import response from '../helpers/response'
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import config from '../config'
+import sendEmail from '../helpers/mailer'
 
 // import all models
 import users from '../models/User'
@@ -59,9 +60,20 @@ namespace AuthControllerModule {
 				})
 
 				return response(req, res, 200, true, 'Login Successfully', { token })
-			} catch (err) {
+			} catch (err: any) {
 				console.log(err)
 				return response(req, res, 500, false, 'Login Failed')
+			}
+		}
+
+		public static async sendForgotPasswordLink (req: Request, res: Response): Promise<Response> {
+			try {
+				const info: any = await sendEmail(req.body.email)
+				console.log(info)
+				return response(req, res, 200, true, 'The message link has been sent')
+			} catch (err: any) {
+				console.log(err)
+				return response(req, res, 500, false, err.message)
 			}
 		}
 	}

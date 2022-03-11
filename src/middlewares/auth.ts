@@ -24,10 +24,10 @@ export const registerMiddleware = [
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
-			return response(req, res, 200, false, errors.array()[0].msg)
+			return response(req, res, 400, false, errors.array()[0].msg)
 		}
 
-		return next()
+		next()
 	}
 ]
 
@@ -47,3 +47,19 @@ export const isLogin = async (req: Request, res: Response, next: NextFunction): 
 		return response(req, res, 400, false, 'Forbidden')
 	}
 }
+
+export const sendForgotPasswordLink = [
+	body('email', "The email field can't be empty")
+		.notEmpty(),
+	body('email', 'The email field is incorrect')
+		.isEmail(),
+	(req: Request, res: Response, next: NextFunction): void | Response => {
+		const errors: any = validationResult(req)
+
+		if (!errors.isEmpty()) {
+			return response(req, res, 400, false, errors.array()[0].msg)
+		}
+
+		next()
+	}
+]
