@@ -3,6 +3,8 @@
 import { Request, Response, NextFunction } from 'express'
 import response from '../helpers/response'
 import bcryptjs from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import config from '../config'
 
 // import all models
 import users from '../models/User'
@@ -41,6 +43,25 @@ namespace AuthControllerModule {
 			} catch (err) {
 				console.log(err)
 				return response(req, res, 500, false, 'Failed to getting a user by email, server error')
+			}
+		}
+
+		public static async login (req: Request, res: Response): Promise<Response> {
+			try {
+				const isExists: any = await users.findOneByEmail(req.body.email)
+
+				if (!isExists || !(await bcryptjs.compare(req.body.password, isExists.password))) {
+					return response(req, res, 400, false, 'The email or password is wrong')
+				}
+
+				const token: string = jwt.sign({ id: isExists.id, email: isExists.email }, config.secretKey, {
+					expiresIn: 60
+				})
+
+				return response(req, res, 200, true, 'Login Successfully', { token })
+			} catch (err) {
+				console.log(err)
+				return response(req, res, 500, false, 'Login Failed')
 			}
 		}
 	}

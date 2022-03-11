@@ -1,6 +1,8 @@
 // ========== Auth Middlewares
 // import all modules
 import { Request, Response, NextFunction } from 'express'
+import jwt from 'jsonwebtoken'
+import config from '../config'
 import { body, validationResult } from 'express-validator'
 import response from '../helpers/response'
 
@@ -18,7 +20,7 @@ export const registerMiddleware = [
 	body('phoneNumber', 'The phone number field is incorrect')
 		.isMobilePhone('id-ID'),
 
-	(req: Request, res: Response, next: NextFunction) => {
+	(req: Request, res: Response, next: NextFunction): void | Response => {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
@@ -28,3 +30,20 @@ export const registerMiddleware = [
 		return next()
 	}
 ]
+
+export const isLogin = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
+	const token: string | undefined = req.headers.authorization
+
+	if (token) {
+		try {
+			const decode: any = await jwt.verify(token, config.secretKey)
+			req.app.locals.token = decode
+			next()
+		} catch (err: any) {
+			console.log(err)
+			return response(req, res, 400, false, err.message)
+		}
+	} else {
+		return response(req, res, 400, false, 'Forbidden')
+	}
+}

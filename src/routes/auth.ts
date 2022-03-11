@@ -20,6 +20,7 @@ namespace AuthRouterModule {
 
 		public get getRouter (): ExpressRouter {
 			this.router.post('/auth/register', registerMiddleware, AuthControllerModule.Auth.register)
+			this.router.post('/auth/login', AuthControllerModule.Auth.login)
 
 			return this.router
 		}
