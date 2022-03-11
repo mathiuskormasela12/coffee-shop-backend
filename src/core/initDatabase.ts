@@ -6,7 +6,7 @@ import config from '../config'
 import bulkCreateTables from '../helpers/bulkCreateTables'
 
 // import all models
-import UsersModule from '../models/User'
+import users from '../models/User'
 
 async function initDatabase (): Promise<void> {
 	const databaseConnection = mysql.createConnection({
@@ -18,9 +18,6 @@ async function initDatabase (): Promise<void> {
 	try {
 		// create the coffeeshop database
 		await DatabaseModule.Database.createDatabase(databaseConnection)
-
-		// instance all models
-		const users = new UsersModule.User()
 
 		bulkCreateTables([users])
 		console.log('The database and the tables have been created successfully!')

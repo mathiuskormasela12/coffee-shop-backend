@@ -12,15 +12,19 @@ namespace DatabaseModule {
 			this.connection = mysql.createConnection({
 				host: config.database.host,
 				user: config.database.user,
-				password: config.database.password,
-				database: config.database.database
+				password: config.database.password
 			})
 
 			this.connect()
 		}
 
 		protected get database (): Connection {
-			return this.connection
+			return mysql.createConnection({
+				host: config.database.host,
+				user: config.database.user,
+				password: config.database.password,
+				database: config.database.database
+			})
 		}
 
 		public static createDatabase<T extends ICreateDatabase> (database: T): Promise<boolean | Error> {
