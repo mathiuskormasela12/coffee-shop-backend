@@ -46,11 +46,67 @@ namespace UserModule {
 			})
 		}
 
+		public async findOne (condition: any): Promise<any> {
+			const sql: string = `SELECT * FROM users WHERE ${Object.keys(condition).map((item, index) => `${item}='${Object.values(condition)[index]}'`).join(' AND ')}`
+
+			return new Promise((resolve: any, reject: any) => {
+				this.database.query(sql, (err: any, results: any) => {
+					if (err) {
+						reject(err)
+					} else {
+						resolve(results[0])
+					}
+				})
+			})
+		}
+
+		public async findAll (condition: any): Promise<any> {
+			const sql: string = `SELECT * FROM users WHERE ${Object.keys(condition).map((item, index) => `${item}='${Object.values(condition)[index]}'`).join(' AND ')}`
+
+			return new Promise((resolve: any, reject: any) => {
+				this.database.query(sql, (err: any, results: any) => {
+					if (err) {
+						reject(err)
+					} else {
+						resolve(results)
+					}
+				})
+			})
+		}
+
 		public async create (data: any): Promise<any> {
 			const sql: string = 'INSERT INTO users SET ?'
 
 			return new Promise((resolve: any, reject: any) => {
 				this.database.query(sql, data, (err: any, results: any) => {
+					if (err) {
+						reject(err)
+					} else {
+						resolve(results)
+					}
+				})
+			})
+		}
+
+		public async update (id: number, data: any): Promise<any> {
+			const sql: string = 'UPDATE users SET ? WHERE id = ?'
+
+			return new Promise((resolve: any, reject: any) => {
+				this.database.query(sql, [data, id], (err: any, results: any) => {
+					if (err) {
+						reject(err)
+					} else {
+						resolve(results)
+					}
+				})
+			})
+		}
+
+		public async delete (id: number): Promise<any> {
+			const sql: string = 'DELETE users WHERE id = ?'
+
+			return new Promise((resolve: any, reject: any) => {
+				this.database.query(sql, id, (err: any, results: any) => {
 					if (err) {
 						reject(err)
 					} else {

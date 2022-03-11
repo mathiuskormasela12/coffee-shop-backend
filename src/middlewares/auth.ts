@@ -3,7 +3,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import config from '../config'
-import { body, validationResult } from 'express-validator'
+import { body, param, validationResult } from 'express-validator'
 import response from '../helpers/response'
 
 export const registerMiddleware = [
@@ -53,6 +53,28 @@ export const sendForgotPasswordLink = [
 		.notEmpty(),
 	body('email', 'The email field is incorrect')
 		.isEmail(),
+	(req: Request, res: Response, next: NextFunction): void | Response => {
+		const errors: any = validationResult(req)
+
+		if (!errors.isEmpty()) {
+			return response(req, res, 400, false, errors.array()[0].msg)
+		}
+
+		next()
+	}
+]
+
+export const updatePassword = [
+	param('id', 'The id is not a number')
+		.isInt(),
+	body('currentPassword', "The current password field can't be empty")
+		.notEmpty(),
+	body('password', "The password field can't be empty")
+		.notEmpty(),
+	body('currentPassword', 'The current password is too week')
+		.isStrongPassword(),
+	body('password', 'The password is too week')
+		.isStrongPassword(),
 	(req: Request, res: Response, next: NextFunction): void | Response => {
 		const errors: any = validationResult(req)
 

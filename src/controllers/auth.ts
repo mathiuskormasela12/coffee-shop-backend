@@ -87,6 +87,40 @@ namespace AuthControllerModule {
 				return response(req, res, 500, false, 'Failed to get a user data')
 			}
 		}
+
+		public static async updatePassword (req: Request, res: Response): Promise<Response> {
+			try {
+				const user = await users.findOne({ id: req.params.id })
+
+				if (!user) {
+					return response(req, res, 400, false, 'The user does not exist')
+				}
+
+				if (!(await bcryptjs.compare(req.body.currentPassword, user.password))) {
+					return response(req, res, 400, false, "The current password doesn't match")
+				}
+
+				const data: any = {
+					password: await bcryptjs.hash(req.body.password, 10)
+				}
+
+				try {
+					const results: any = await users.update(user.id, data)
+
+					if (results.affectedRows < 1) {
+						return response(req, res, 400, false, 'Failed to update the password')
+					}
+
+					return response(req, res, 200, true, 'The password has been updated')
+				} catch (err: any) {
+					console.log(err)
+					return response(req, res, 500, false, err.message)
+				}
+			} catch (err) {
+				console.log(err)
+				return response(req, res, 500, false, 'Failed to get a user data')
+			}
+		}
 	}
 }
 
