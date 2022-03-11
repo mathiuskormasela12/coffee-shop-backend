@@ -8,6 +8,7 @@ import morgan from 'morgan'
 import cors from 'cors'
 import IApp from './IApp'
 import config from '../config'
+import initDatabase from './initDatabase'
 
 // import all routes
 import AuthRoutesModule from '../routes/auth'
@@ -46,6 +47,9 @@ namespace AppModule{
 			}
 
 			this.app.use(cors(corsOption))
+
+			// database initialization
+			initDatabase()
 
 			this.routes()
 		}
