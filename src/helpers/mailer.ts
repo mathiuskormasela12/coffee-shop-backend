@@ -2,9 +2,10 @@
 // import all modules
 import nodemailer from 'nodemailer'
 import smtp from 'nodemailer-smtp-transport'
+import jwt from 'jsonwebtoken'
 import config from '../config'
 
-function sendEmail (receiverEmail: string): Promise<any> {
+function sendEmail (id: number, receiverEmail: string): Promise<any> {
 	const mailer: any = nodemailer.createTransport(
 		smtp({
 			host: config.email.host,
@@ -16,14 +17,7 @@ function sendEmail (receiverEmail: string): Promise<any> {
 		})
 	)
 
-	console.log({
-		host: config.email.host,
-		service: config.email.service,
-		auth: {
-			user: config.email.email,
-			pass: config.email.password
-		}
-	})
+	const decodeId: string = jwt.sign({ id }, config.secretKey, { expiresIn: 60 * 2 })
 
 	const mailOptions: any = {
 		from: config.email.email,
@@ -226,7 +220,7 @@ function sendEmail (receiverEmail: string): Promise<any> {
 											<tr>
 												<td align="center">
 													<div>
-														<a class="button btn-primary" style="color:white;" href="${config.webAppUrl}/auth/forgot-password">
+														<a class="button btn-primary" style="color:white;" href="${config.webAppUrl}/auth/forgot-password?key=${decodeId}">
 															Click Me
 														</a>
 													</div>

@@ -68,12 +68,23 @@ namespace AuthControllerModule {
 
 		public static async sendForgotPasswordLink (req: Request, res: Response): Promise<Response> {
 			try {
-				const info: any = await sendEmail(req.body.email)
-				console.log(info)
-				return response(req, res, 200, true, 'The message link has been sent')
-			} catch (err: any) {
+				const user = await users.findOneByEmail(req.body.email)
+
+				if (!user) {
+					return response(req, res, 400, false, 'The user does not exist')
+				}
+
+				try {
+					const info: any = await sendEmail(user.id, req.body.email)
+					console.log(info)
+					return response(req, res, 200, true, 'The message link has been sent')
+				} catch (err: any) {
+					console.log(err)
+					return response(req, res, 500, false, err.message)
+				}
+			} catch (err) {
 				console.log(err)
-				return response(req, res, 500, false, err.message)
+				return response(req, res, 500, false, 'Failed to get a user data')
 			}
 		}
 	}
