@@ -10,6 +10,8 @@ export default {
 	appUrl: String(process.env.APP_URL),
 	apiUrl: String(process.env.API_URL),
 	publicUrl: String(process.env.PUBLIC_URL),
+	accessTokenSecretKey: String(process.env.ACCESS_TOKEN_SECRET_KEY),
+	refreshTokenSecretKey: String(process.env.REFRESH_TOKEN_SECRET_KEY),
 	secretKey: String(process.env.SECRET_KEY),
 	webAppUrl: String(process.env.WEB_APP_URL),
 	whiteLists: [
@@ -28,5 +30,11 @@ export default {
 		service: String(process.env.EMAIL_SERVICE),
 		email: String(process.env.EMAIL),
 		password: String(process.env.EMAIL_PASSWORD)
+	},
+	accessTokenOption: {
+		expiresIn: '30m'
+	},
+	refreshTokenOption: {
+		expiresIn: '1h'
 	}
 }

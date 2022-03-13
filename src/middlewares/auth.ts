@@ -3,7 +3,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import config from '../config'
-import { body, param, validationResult } from 'express-validator'
+import { body, param, validationResult, header } from 'express-validator'
 import response from '../helpers/response'
 
 export const registerMiddleware = [
@@ -32,12 +32,12 @@ export const registerMiddleware = [
 ]
 
 export const isLogin = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-	const token: string | undefined = req.headers.authorization
+	const accessToken: string | undefined = req.headers.authorization
 
-	if (token) {
+	if (accessToken) {
 		try {
-			const decode: any = await jwt.verify(token, config.secretKey)
-			req.app.locals.token = decode
+			const decode: any = await jwt.verify(accessToken, config.accessTokenSecretKey)
+			req.app.locals.accessToken = decode
 			next()
 		} catch (err: any) {
 			console.log(err)
@@ -76,6 +76,22 @@ export const updatePassword = [
 	body('password', 'The password is too week')
 		.isStrongPassword(),
 	(req: Request, res: Response, next: NextFunction): void | Response => {
+		const errors: any = validationResult(req)
+
+		if (!errors.isEmpty()) {
+			return response(req, res, 400, false, errors.array()[0].msg)
+		}
+
+		next()
+	}
+]
+
+export const getAccessToken = [
+	header('x-refresh-token', "The refresh token can't be empty")
+		.notEmpty(),
+	header('x-refresh-token', 'The refresh token must be string')
+		.isString(),
+	(req: Request, res: Response, next: NextFunction) => {
 		const errors: any = validationResult(req)
 
 		if (!errors.isEmpty()) {

@@ -12,6 +12,8 @@ import users from '../models/User'
 
 namespace AuthControllerModule {
 	export class Auth {
+		private static refreshTokens: string[] = [];
+
 		public static async register (req: Request, res: Response, next: NextFunction): Promise<Response> {
 			try {
 				const results: any = await users.findOneByEmail(req.body.email)
@@ -55,11 +57,13 @@ namespace AuthControllerModule {
 					return response(req, res, 400, false, 'The email or password is wrong')
 				}
 
-				const token: string = jwt.sign({ id: isExists.id, email: isExists.email }, config.secretKey, {
-					expiresIn: 60
-				})
+				const accessToken: string = jwt.sign({ id: isExists.id, email: isExists.email }, config.accessTokenSecretKey, config.accessTokenOption)
 
-				return response(req, res, 200, true, 'Login Successfully', { token })
+				const refreshToken: string = jwt.sign({ id: isExists.id, email: isExists.email }, config.refreshTokenSecretKey, config.refreshTokenOption)
+
+				Auth.refreshTokens.push(refreshToken)
+
+				return response(req, res, 200, true, 'Login Successfully', { accessToken, refreshToken })
 			} catch (err: any) {
 				console.log(err)
 				return response(req, res, 500, false, 'Login Failed')
@@ -119,6 +123,24 @@ namespace AuthControllerModule {
 			} catch (err) {
 				console.log(err)
 				return response(req, res, 500, false, 'Failed to get a user data')
+			}
+		}
+
+		public static async getAccessToken (req: Request, res: Response): Promise<Response> {
+			const refreshToken: any = req.headers['x-refresh-token']
+
+			if (Auth.refreshTokens.indexOf(String(refreshToken)) === -1) {
+				return response(req, res, 400, false, 'Invalid refresh token')
+			}
+
+			try {
+				const decodeRefreshToken: any = await jwt.verify(refreshToken, config.refreshTokenSecretKey)
+				const accessToken: any = jwt.sign({ id: decodeRefreshToken.id, email: decodeRefreshToken.email }, config.accessTokenSecretKey)
+
+				return response(req, res, 200, true, 'The access token is created successfully', { accessToken })
+			} catch (err: any) {
+				console.log(err)
+				return response(req, res, 500, false, err.message)
 			}
 		}
 	}
